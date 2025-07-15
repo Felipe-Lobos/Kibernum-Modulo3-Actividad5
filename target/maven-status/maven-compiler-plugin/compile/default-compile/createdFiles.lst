@@ -1,0 +1,6 @@
+cl\kibernumacademy\model\Notification.class
+cl\kibernumacademy\model\NotificationHistory.class
+cl\kibernumacademy\service\SmsChannel.class
+cl\kibernumacademy\service\EmailChannel.class
+cl\kibernumacademy\service\NotificationManager.class
+cl\kibernumacademy\service\NotificationChannel.class
