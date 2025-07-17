@@ -5,13 +5,14 @@ import cl.kibernumacademy.model.Notification;
 <span class="nc" id="L5">public class EmailChannel implements NotificationChannel {</span>
 
     @Override
-    public void send(Notification notification) {
+    public boolean send(Notification notification) {
 <span class="nc" id="L9">        System.out.println(&quot;Notificacion: &quot;+notification+&quot; Enviada desde &quot;+ this.getClass().getSimpleName());</span>
-<span class="nc" id="L10">    }</span>
+<span class="nc" id="L10">        return true;</span>
+    }
 
     @Override
     public String getChannelName() {
-<span class="nc" id="L14">        return &quot;EMAIL&quot;;</span>
+<span class="nc" id="L15">        return &quot;EMAIL&quot;;</span>
     }
 
     

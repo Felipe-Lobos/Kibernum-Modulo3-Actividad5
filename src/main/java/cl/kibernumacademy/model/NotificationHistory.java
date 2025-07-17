@@ -1,10 +1,6 @@
 package cl.kibernumacademy.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class NotificationHistory {
 
     private Notification notification;

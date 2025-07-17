@@ -3,14 +3,17 @@
 import cl.kibernumacademy.model.Notification;
 
 <span class="nc" id="L5">public class SmsChannel implements NotificationChannel {</span>
-    @Override
-    public void send(Notification notification) {
-<span class="nc" id="L8">        System.out.println(&quot;Notificacion: &quot; + notification + &quot; Enviada desde &quot; + this.getClass().getSimpleName());</span>
-<span class="nc" id="L9">    }</span>
+
 
     @Override
     public String getChannelName() {
-<span class="nc" id="L13">        return &quot;SMS&quot;;</span>
+<span class="nc" id="L10">        return &quot;SMS&quot;;</span>
+    }
+
+    @Override
+    public boolean send(Notification notification) {
+<span class="nc" id="L15">        System.out.println(&quot;Notificacion: &quot; + notification + &quot; Enviada desde &quot; + this.getClass().getSimpleName());</span>
+<span class="nc" id="L16">        return true;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

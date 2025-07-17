@@ -19,12 +19,14 @@ public class NotificationManager {
     }
 
 
-    public boolean sendNotification(String mensaje, String destinatario, String canal) {
+    public boolean sendNotification(Notification notification, String canal) {
+        String mensaje = notification.getMensaje();
+        String destinatario = notification.getDestinatario();
         if (mensaje.isEmpty() || mensaje == null || destinatario == null) {
             return false;
         }
         NotificationChannel channel;
-        Notification notification = new Notification(mensaje, destinatario);
+        // Notification notification = new Notification(mensaje, destinatario);
         // String emailRegex = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$";
         // String smsRegex = "^[\\\\+]?[(]?[0-9]{3}[)]?[-\\\\s\\\\.]?[0-9]{3}[-\\\\s\\\\.]?[0-9]{4,6}$";
         if(canal.equalsIgnoreCase("SMS")){
@@ -32,11 +34,14 @@ public class NotificationManager {
         }else if (canal.equalsIgnoreCase("EMAIL")){
             channel = emailChannel;
         }else{
-            return false;
+            throw new IllegalArgumentException("ERROR EN EL CANAL ESPECIFICADO");
         }
-        channel.send(notification);
-        saveNotification(notification, canal);
-        return true;
+        boolean result = channel.send(notification);
+        if (result) {
+            saveNotification(notification, canal);
+        }
+        System.out.println("Result=="+result);
+        return result;
     }
 
 

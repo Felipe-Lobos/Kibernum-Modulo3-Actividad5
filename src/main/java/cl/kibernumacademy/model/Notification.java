@@ -1,9 +1,4 @@
 package cl.kibernumacademy.model;
-
-
-
-import cl.kibernumacademy.service.NotificationChannel;
-
 public class Notification {
     private String mensaje;
     private String destinatario;
