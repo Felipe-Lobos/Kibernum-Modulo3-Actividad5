@@ -2,54 +2,59 @@ package cl.kibernumacademy.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cl.kibernumacademy.model.Notification;
 import cl.kibernumacademy.model.NotificationHistory;
 
 public class NotificationManager {
-    private NotificationChannel smsChannel;
-    private NotificationChannel emailChannel;
-    private List<NotificationHistory> notifications = new ArrayList<>();
-    
+    private static final String SMS = "SMS";
+    private static final String EMAIL = "EMAIL";
 
+    // Lista donde se guardan las notificaciones enviadas
+    private List<NotificationHistory> notifications = new ArrayList<>();
+    // Aquí se guardan los canales disponibles (SMS, EMAIL, etc)
+    private final Map<String, NotificationChannel> channelMap;
+
+    // Constructor, recibe los canales y los guarda en el mapa
     public NotificationManager(NotificationChannel smsChannel, NotificationChannel emailChannel) {
-        this.smsChannel = smsChannel;
-        this.emailChannel = emailChannel;
+        channelMap = new HashMap<>();
+        channelMap.put(SMS, smsChannel);
+        channelMap.put(EMAIL, emailChannel);
     }
 
-
+    // Este método manda la notificación por el canal que le digas
     public boolean sendNotification(Notification notification, String canal) {
         String mensaje = notification.getMensaje();
         String destinatario = notification.getDestinatario();
-        if (mensaje.isEmpty() || mensaje == null || destinatario == null) {
+        // Si falta el mensaje o el destinatario, no se envía nada
+        if (mensaje == null || destinatario == null || mensaje.isEmpty() || destinatario.isEmpty()) {
             return false;
         }
-        NotificationChannel channel;
-        // Notification notification = new Notification(mensaje, destinatario);
-        // String emailRegex = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$";
-        // String smsRegex = "^[\\\\+]?[(]?[0-9]{3}[)]?[-\\\\s\\\\.]?[0-9]{3}[-\\\\s\\\\.]?[0-9]{4,6}$";
-        if(canal.equalsIgnoreCase("SMS")){
-            channel = smsChannel;
-        }else if (canal.equalsIgnoreCase("EMAIL")){
-            channel = emailChannel;
-        }else{
+
+        // Busca el canal en el mapa, si no existe lanza error
+        NotificationChannel channel = channelMap.get(canal.toUpperCase());
+        if (channel == null) {
             throw new IllegalArgumentException("ERROR EN EL CANAL ESPECIFICADO");
         }
+        
+        // Intenta enviar la notificación, si sale bien la guarda en el historial
         boolean result = channel.send(notification);
         if (result) {
             saveNotification(notification, canal);
         }
-        System.out.println("Result=="+result);
         return result;
     }
 
-
-    private void saveNotification(Notification notification, String canal){
+    // Guarda la notificación en la lista de historial
+    private void saveNotification(Notification notification, String canal) {
         notifications.add(new NotificationHistory(notification, canal));
     }
+
+    // Devuelve la lista de notificaciones enviadas (no se puede modificar desde fuera)
     public List<NotificationHistory> getNotifications() {
         return Collections.unmodifiableList(notifications);
     }
-
 }

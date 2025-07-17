@@ -1,6 +1,7 @@
 package cl.kibernumacademy.model;
 
 import java.time.LocalDateTime;
+
 public class NotificationHistory {
 
     private Notification notification;

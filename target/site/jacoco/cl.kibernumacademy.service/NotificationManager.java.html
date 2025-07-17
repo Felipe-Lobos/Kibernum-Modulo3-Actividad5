@@ -2,55 +2,60 @@
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cl.kibernumacademy.model.Notification;
 import cl.kibernumacademy.model.NotificationHistory;
 
 public class NotificationManager {
-    private NotificationChannel smsChannel;
-    private NotificationChannel emailChannel;
-<span class="fc" id="L13">    private List&lt;NotificationHistory&gt; notifications = new ArrayList&lt;&gt;();</span>
-    
+    private static final String SMS = &quot;SMS&quot;;
+    private static final String EMAIL = &quot;EMAIL&quot;;
 
-<span class="fc" id="L16">    public NotificationManager(NotificationChannel smsChannel, NotificationChannel emailChannel) {</span>
-<span class="fc" id="L17">        this.smsChannel = smsChannel;</span>
-<span class="fc" id="L18">        this.emailChannel = emailChannel;</span>
-<span class="fc" id="L19">    }</span>
+    // Lista donde se guardan las notificaciones enviadas
+<span class="fc" id="L17">    private List&lt;NotificationHistory&gt; notifications = new ArrayList&lt;&gt;();</span>
+    // Aquí se guardan los canales disponibles (SMS, EMAIL, etc)
+    private final Map&lt;String, NotificationChannel&gt; channelMap;
 
+    // Constructor, recibe los canales y los guarda en el mapa
+<span class="fc" id="L22">    public NotificationManager(NotificationChannel smsChannel, NotificationChannel emailChannel) {</span>
+<span class="fc" id="L23">        channelMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L24">        channelMap.put(SMS, smsChannel);</span>
+<span class="fc" id="L25">        channelMap.put(EMAIL, emailChannel);</span>
+<span class="fc" id="L26">    }</span>
 
+    // Este método manda la notificación por el canal que le digas
     public boolean sendNotification(Notification notification, String canal) {
-<span class="fc" id="L23">        String mensaje = notification.getMensaje();</span>
-<span class="fc" id="L24">        String destinatario = notification.getDestinatario();</span>
-<span class="pc bpc" id="L25" title="3 of 6 branches missed.">        if (mensaje.isEmpty() || mensaje == null || destinatario == null) {</span>
-<span class="nc" id="L26">            return false;</span>
+<span class="fc" id="L30">        String mensaje = notification.getMensaje();</span>
+<span class="fc" id="L31">        String destinatario = notification.getDestinatario();</span>
+        // Si falta el mensaje o el destinatario, no se envía nada
+<span class="pc bpc" id="L33" title="4 of 8 branches missed.">        if (mensaje == null || destinatario == null || mensaje.isEmpty() || destinatario.isEmpty()) {</span>
+<span class="nc" id="L34">            return false;</span>
         }
-        NotificationChannel channel;
-        // Notification notification = new Notification(mensaje, destinatario);
-        // String emailRegex = &quot;^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$&quot;;
-        // String smsRegex = &quot;^[\\\\+]?[(]?[0-9]{3}[)]?[-\\\\s\\\\.]?[0-9]{3}[-\\\\s\\\\.]?[0-9]{4,6}$&quot;;
-<span class="fc bfc" id="L32" title="All 2 branches covered.">        if(canal.equalsIgnoreCase(&quot;SMS&quot;)){</span>
-<span class="fc" id="L33">            channel = smsChannel;</span>
-<span class="fc bfc" id="L34" title="All 2 branches covered.">        }else if (canal.equalsIgnoreCase(&quot;EMAIL&quot;)){</span>
-<span class="fc" id="L35">            channel = emailChannel;</span>
-<span class="fc" id="L36">        }else{</span>
-<span class="fc" id="L37">            throw new IllegalArgumentException(&quot;ERROR EN EL CANAL ESPECIFICADO&quot;);</span>
+
+        // Busca el canal en el mapa, si no existe lanza error
+<span class="fc" id="L38">        NotificationChannel channel = channelMap.get(canal.toUpperCase());</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (channel == null) {</span>
+<span class="fc" id="L40">            throw new IllegalArgumentException(&quot;ERROR EN EL CANAL ESPECIFICADO&quot;);</span>
         }
-<span class="fc" id="L39">        boolean result = channel.send(notification);</span>
-<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (result) {</span>
-<span class="fc" id="L41">            saveNotification(notification, canal);</span>
+        
+        // Intenta enviar la notificación, si sale bien la guarda en el historial
+<span class="fc" id="L44">        boolean result = channel.send(notification);</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (result) {</span>
+<span class="fc" id="L46">            saveNotification(notification, canal);</span>
         }
-<span class="fc" id="L43">        System.out.println(&quot;Result==&quot;+result);</span>
-<span class="fc" id="L44">        return result;</span>
+<span class="fc" id="L48">        return result;</span>
     }
 
+    // Guarda la notificación en la lista de historial
+    private void saveNotification(Notification notification, String canal) {
+<span class="fc" id="L53">        notifications.add(new NotificationHistory(notification, canal));</span>
+<span class="fc" id="L54">    }</span>
 
-    private void saveNotification(Notification notification, String canal){
-<span class="fc" id="L49">        notifications.add(new NotificationHistory(notification, canal));</span>
-<span class="fc" id="L50">    }</span>
+    // Devuelve la lista de notificaciones enviadas (no se puede modificar desde fuera)
     public List&lt;NotificationHistory&gt; getNotifications() {
-<span class="fc" id="L52">        return Collections.unmodifiableList(notifications);</span>
+<span class="fc" id="L58">        return Collections.unmodifiableList(notifications);</span>
     }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

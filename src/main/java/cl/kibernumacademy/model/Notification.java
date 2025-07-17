@@ -16,14 +16,4 @@ public class Notification {
         return destinatario;
     }
 
-    // public NotificationChannel getCanalUtilizado() {
-    //     return canalUtilizado;
-    // }
-
-    // @Override
-    // public String toString() {
-    //     return "Notification [mensaje=" + mensaje + ", destinatario=" + destinatario + ", canalUtilizado="
-    //             + canalUtilizado + "]";
-    // }
-
 }
